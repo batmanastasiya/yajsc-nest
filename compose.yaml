@@ -1,0 +1,52 @@
+services:
+  pgsql:
+    image: "postgres"
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+#    volumes:
+#      - ./data/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    hostname: database
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    restart: unless-stopped
+    volumes:
+      - ./src:/app/src
+    environment:
+      - NODE_ENV=development
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    hostname: app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - pgsql
+
+#  app-prod:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: unless-stopped
+#    volumes:
+#      - ./src:/app/src
+#    environment:
+#      - NODE_ENV=production
+#      - POSTGRES_HOST=database
+#      - POSTGRES_PORT=5432
+#      - POSTGRES_USER=root
+#      - POSTGRES_PASSWORD=password
+#    hostname: app
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - pgsql
