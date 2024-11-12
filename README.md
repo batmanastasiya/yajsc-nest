@@ -34,6 +34,14 @@ $ npm install
 
 ## Compile and run the project
 
+If you want to compile and run the project, you can use one of the following commands or all of them in sequence after changes:
+
+```bash
+$ docker compose rm -f && docker compose up --build
+```
+
+
+
 ```bash
 # development
 $ npm run start
